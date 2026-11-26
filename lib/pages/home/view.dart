@@ -99,7 +99,6 @@ class _HomePageState extends CommonPageState<HomePage>
         const SizedBox(width: 8),
         searchBar(),
         const SizedBox(width: 4),
-        msgBadge(_mainController, icon: Icons.mail_outline),
         IconButton(
           tooltip: '播放历史',
           icon: const Icon(Icons.history),
@@ -113,6 +112,7 @@ class _HomePageState extends CommonPageState<HomePage>
             Get.toNamed('/history');
           },
         ),
+        msgBadge(_mainController, icon: Icons.mail_outline),
       ],
     );
     if (_homeController.hideTopBar) {
