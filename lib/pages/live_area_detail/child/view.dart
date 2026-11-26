@@ -6,6 +6,7 @@ import 'package:PiliPlus/common/widgets/loading_widget/http_error.dart';
 import 'package:PiliPlus/common/widgets/sliver/sliver_pinned_header.dart';
 import 'package:PiliPlus/http/loading_state.dart';
 import 'package:PiliPlus/models_new/live/live_feed_index/card_data_list_item.dart';
+import 'package:PiliPlus/pages/live/widgets/live_card_details.dart';
 import 'package:PiliPlus/pages/live/widgets/live_item_app.dart';
 import 'package:PiliPlus/pages/live_area_detail/child/controller.dart';
 import 'package:PiliPlus/pages/search/widgets/search_text.dart';
@@ -34,10 +35,12 @@ class _LiveAreaChildPageState extends State<LiveAreaChildPage>
   late final LiveAreaChildController _controller;
 
   late ColorScheme colorScheme;
+  late SliverGridDelegateWithExtentAndRatio gridDelegate;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    gridDelegate = LiveCardDetails.gridDelegate(context);
     colorScheme = ColorScheme.of(context);
   }
 
@@ -61,8 +64,8 @@ class _LiveAreaChildPageState extends State<LiveAreaChildPage>
         slivers: [
           SliverPadding(
             padding: EdgeInsets.only(
-              left: Style.safeSpace,
-              right: Style.safeSpace,
+              left: Style.safeSpace / 2,
+              right: Style.safeSpace / 2,
               bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
             ),
             sliver: Obx(() => _buildBody(_controller.loadingState.value)),
@@ -72,24 +75,16 @@ class _LiveAreaChildPageState extends State<LiveAreaChildPage>
     );
   }
 
-  late final gridDelegate = SliverGridDelegateWithExtentAndRatio(
-    mainAxisSpacing: Style.cardSpace,
-    crossAxisSpacing: Style.cardSpace,
-    maxCrossAxisExtent: Grid.smallCardWidth,
-    childAspectRatio: Style.aspectRatio,
-    mainAxisExtent: MediaQuery.textScalerOf(context).scale(90),
-  );
-
   Widget _buildBody(LoadingState<List<CardLiveItem>?> loadingState) {
     switch (loadingState) {
       case Loading():
         return SliverPadding(
-          padding: const .only(top: Style.safeSpace),
+          padding: const .only(top: Style.cardSpace / 2),
           sliver: SliverGrid(
             gridDelegate: gridDelegate,
             delegate: const SliverSingleChildDelegate(
               count: 10,
-              child: VideoCardVSkeleton(),
+              child: VideoCardVSkeleton(showStatRow: false),
             ),
           ),
         );
@@ -153,7 +148,7 @@ class _LiveAreaChildPageState extends State<LiveAreaChildPage>
           );
         }
         return SliverPadding(
-          padding: const .only(top: Style.safeSpace),
+          padding: const .only(top: Style.cardSpace / 2),
           sliver: child,
         );
       case Error(:final errMsg):

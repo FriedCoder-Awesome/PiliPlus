@@ -95,11 +95,24 @@ class _HomePageState extends CommonPageState<HomePage>
     const padding = EdgeInsets.fromLTRB(14, 6, 14, 0);
     final child = Row(
       children: [
+        userAvatar(colorScheme: _colorScheme, mainController: _mainController),
+        const SizedBox(width: 8),
         searchBar(),
         const SizedBox(width: 4),
-        msgBadge(_mainController),
-        const SizedBox(width: 8),
-        userAvatar(colorScheme: _colorScheme, mainController: _mainController),
+        msgBadge(_mainController, icon: Icons.mail_outline),
+        IconButton(
+          tooltip: '播放历史',
+          icon: const Icon(Icons.history),
+          onPressed: () async {
+            if (!_mainController.accountService.isLogin.value) {
+              await Get.toNamed('/loginPage');
+              if (!mounted || !_mainController.accountService.isLogin.value) {
+                return;
+              }
+            }
+            Get.toNamed('/history');
+          },
+        ),
       ],
     );
     if (_homeController.hideTopBar) {
@@ -267,7 +280,10 @@ Widget userAvatar({
   );
 }
 
-Widget msgBadge(MainController mainController) {
+Widget msgBadge(
+  MainController mainController, {
+  IconData icon = Icons.notifications_none,
+}) {
   return Obx(
     () {
       if (mainController.accountService.isLogin.value) {
@@ -288,7 +304,7 @@ Widget msgBadge(MainController mainController) {
                 ? const Alignment(0.0, -0.85)
                 : const Alignment(1.0, -0.85),
             label: isNumBadge && count != null ? Text(count) : null,
-            child: const Icon(Icons.notifications_none),
+            child: Icon(icon),
           ),
         );
       }

@@ -6,6 +6,7 @@ import 'package:PiliPlus/common/widgets/loading_widget/http_error.dart';
 import 'package:PiliPlus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:PiliPlus/http/loading_state.dart';
 import 'package:PiliPlus/models_new/live/live_follow/item.dart';
+import 'package:PiliPlus/pages/live/widgets/live_card_details.dart';
 import 'package:PiliPlus/pages/live_follow/controller.dart';
 import 'package:PiliPlus/pages/live_follow/widgets/live_item_follow.dart';
 import 'package:PiliPlus/utils/grid.dart';
@@ -21,6 +22,13 @@ class LiveFollowPage extends StatefulWidget {
 
 class _LiveFollowPageState extends State<LiveFollowPage> {
   final _controller = Get.put(LiveFollowController());
+  late SliverGridDelegateWithExtentAndRatio gridDelegate;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    gridDelegate = LiveCardDetails.gridDelegate(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +49,8 @@ class _LiveFollowPageState extends State<LiveFollowPage> {
           slivers: [
             SliverPadding(
               padding: EdgeInsets.only(
-                left: Style.safeSpace + padding.left,
-                right: Style.safeSpace + padding.right,
+                left: Style.safeSpace / 2 + padding.left,
+                right: Style.safeSpace / 2 + padding.right,
                 bottom: padding.bottom + 100,
               ),
               sliver: Obx(() => _buildBody(_controller.loadingState.value)),
@@ -53,21 +61,13 @@ class _LiveFollowPageState extends State<LiveFollowPage> {
     );
   }
 
-  late final gridDelegate = SliverGridDelegateWithExtentAndRatio(
-    mainAxisSpacing: Style.cardSpace,
-    crossAxisSpacing: Style.cardSpace,
-    maxCrossAxisExtent: Grid.smallCardWidth,
-    childAspectRatio: Style.aspectRatio,
-    mainAxisExtent: MediaQuery.textScalerOf(context).scale(90),
-  );
-
   Widget _buildBody(LoadingState<List<LiveFollowItem>?> loadingState) {
     return switch (loadingState) {
       Loading() => SliverGrid(
         gridDelegate: gridDelegate,
         delegate: const SliverSingleChildDelegate(
           count: 10,
-          child: VideoCardVSkeleton(),
+          child: VideoCardVSkeleton(showStatRow: false),
         ),
       ),
       Success(:final response) =>

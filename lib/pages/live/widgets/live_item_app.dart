@@ -3,6 +3,7 @@ import 'package:PiliPlus/common/widgets/image/image_save.dart';
 import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
 import 'package:PiliPlus/http/live.dart';
 import 'package:PiliPlus/models_new/live/live_feed_index/card_data_list_item.dart';
+import 'package:PiliPlus/pages/live/widgets/live_card_details.dart';
 import 'package:PiliPlus/models_new/live/live_feed_index/feedback.dart';
 import 'package:PiliPlus/pages/search/widgets/search_text.dart';
 import 'package:PiliPlus/utils/extension/iterable_ext.dart';
@@ -63,15 +64,19 @@ class LiveCardVApp extends StatelessWidget {
                     ),
                   ),
                 ),
-                liveContent(theme),
+                LiveCardDetails(
+                  title: item.title,
+                  author: item.uname,
+                  showMenu: !item.feedback.isNullOrEmpty,
+                ),
               ],
             ),
           ),
         ),
         if (!item.feedback.isNullOrEmpty)
           Positioned(
-            right: -5,
-            bottom: -2,
+            right: 0,
+            bottom: 0,
             width: 29,
             height: 29,
             child: IconButton(
@@ -151,37 +156,6 @@ class LiveCardVApp extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-
-  Widget liveContent(ThemeData theme) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(5, 8, 5, 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              item.title.toString(),
-              textAlign: TextAlign.start,
-              style: const TextStyle(letterSpacing: 0.3),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            Text(
-              item.uname.toString(),
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: theme.textTheme.labelMedium!.fontSize,
-                color: theme.colorScheme.outline,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      ),
     );
   }
 

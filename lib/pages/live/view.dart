@@ -12,6 +12,7 @@ import 'package:PiliPlus/http/loading_state.dart';
 import 'package:PiliPlus/models_new/live/live_feed_index/card_data_list_item.dart';
 import 'package:PiliPlus/models_new/live/live_feed_index/card_list.dart';
 import 'package:PiliPlus/pages/live/controller.dart';
+import 'package:PiliPlus/pages/live/widgets/live_card_details.dart';
 import 'package:PiliPlus/pages/live/widgets/live_item_app.dart';
 import 'package:PiliPlus/pages/live/widgets/sliver_pinned_header.dart';
 import 'package:PiliPlus/pages/live_area/view.dart';
@@ -38,6 +39,7 @@ class _LivePageState extends State<LivePage>
   final LiveController controller = Get.put(LiveController());
   late TextScaler textScaler;
   late ColorScheme colorScheme;
+  late SliverGridDelegateWithExtentAndRatio gridDelegate;
 
   @override
   bool get wantKeepAlive => true;
@@ -45,6 +47,7 @@ class _LivePageState extends State<LivePage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    gridDelegate = LiveCardDetails.gridDelegate(context);
     textScaler = MediaQuery.textScalerOf(context);
     colorScheme = ColorScheme.of(context);
   }
@@ -54,7 +57,7 @@ class _LivePageState extends State<LivePage>
     super.build(context);
     return Container(
       clipBehavior: Clip.hardEdge,
-      margin: const EdgeInsets.symmetric(horizontal: Style.safeSpace),
+      margin: const EdgeInsets.symmetric(horizontal: Style.safeSpace / 2),
       decoration: const BoxDecoration(borderRadius: Style.mdRadius),
       child: refreshIndicator(
         key: controller.refreshKey,
@@ -82,7 +85,7 @@ class _LivePageState extends State<LivePage>
     final follow = data.first;
     if (follow != null) {
       return LiveSliverPinnedHeader(
-        areaHeight: areaHeight + 16 /* padding */,
+        areaHeight: areaHeight + Style.cardSpace + Style.cardSpace / 2,
         backgroundColor: colorScheme.surface,
         callback: controller.onTopHeightChanged,
         child: Column(
@@ -100,7 +103,7 @@ class _LivePageState extends State<LivePage>
 
   Widget _buildLiveArea(List<CardLiveItem> list, double areaHeight) {
     return Padding(
-      padding: const .symmetric(vertical: 8.0),
+      padding: const .only(top: Style.cardSpace, bottom: Style.cardSpace / 2),
       child: Row(
         children: [
           Expanded(
@@ -183,22 +186,14 @@ class _LivePageState extends State<LivePage>
     );
   }
 
-  late final gridDelegate = SliverGridDelegateWithExtentAndRatio(
-    mainAxisSpacing: Style.cardSpace,
-    crossAxisSpacing: Style.cardSpace,
-    maxCrossAxisExtent: Grid.smallCardWidth,
-    childAspectRatio: Style.aspectRatio,
-    mainAxisExtent: textScaler.scale(90),
-  );
-
   Widget _buildBody(LoadingState<List?> loadingState) {
     return switch (loadingState) {
       Loading() => SliverPadding(
-        padding: const .only(top: Style.cardSpace),
+        padding: const .only(top: Style.cardSpace / 2),
         sliver: SliverGrid(
           gridDelegate: gridDelegate,
           delegate: const SliverSingleChildDelegate(
-            child: VideoCardVSkeleton(),
+            child: VideoCardVSkeleton(showStatRow: false),
             count: 10,
           ),
         ),
@@ -209,13 +204,12 @@ class _LivePageState extends State<LivePage>
             SliverPinnedHeader(
               backgroundColor: colorScheme.surface,
               child: SizedBox(
-                // 8+10+13*textScaler
-                height: 18.0 + textScaler.scale(13),
+                height: Style.cardSpace / 2 + 10 + textScaler.scale(13),
                 child: Obx(() {
                   final tagIndex = controller.tagIndex.value;
                   return ListView.separated(
                     scrollDirection: .horizontal,
-                    padding: const .only(bottom: 8),
+                    padding: const .only(bottom: Style.cardSpace / 2),
                     separatorBuilder: (_, _) => const SizedBox(width: 12),
                     physics: const AlwaysScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
