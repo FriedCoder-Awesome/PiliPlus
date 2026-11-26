@@ -96,6 +96,11 @@ List<SettingsModel> get replySettings => [
       ReplyGrpc.enableFilter = value.pattern.isNotEmpty;
     },
   ),
+  getBanWordModel(
+    title: '昵称关键词过滤',
+    key: SettingBoxKey.banWordForReplyName,
+    onChanged: (value) => ReplyGrpc.replyNameRegExp = value,
+  ),
   NormalModel(
     title: '线程式评论折叠阈值',
     getSubtitle: () => '当前：「${Pref.foldDepth}」，0为不折叠',

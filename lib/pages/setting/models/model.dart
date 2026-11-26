@@ -256,10 +256,17 @@ SettingsModel getBanWordModel({
             TextButton(
               child: const Text('保存'),
               onPressed: () {
+                final RegExp pattern;
+                try {
+                  pattern = RegExp(editValue, caseSensitive: false);
+                } on FormatException {
+                  SmartDialog.showToast('正则表达式无效，请检查后再保存');
+                  return;
+                }
                 Get.back();
                 banWord = editValue;
                 setState();
-                onChanged(RegExp(banWord, caseSensitive: false));
+                onChanged(pattern);
                 SmartDialog.showToast('已保存');
                 GStorage.setting.put(key, banWord);
               },

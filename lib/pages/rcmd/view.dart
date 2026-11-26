@@ -33,7 +33,7 @@ class _RcmdPageState extends State<RcmdPage>
     final colorScheme = ColorScheme.of(context);
     final child = Container(
       clipBehavior: .hardEdge,
-      margin: const .symmetric(horizontal: Style.safeSpace),
+      margin: const .symmetric(horizontal: Style.safeSpace / 2),
       decoration: const BoxDecoration(borderRadius: Style.mdRadius),
       child: refreshIndicator(
         key: controller.refreshKey,
@@ -43,7 +43,7 @@ class _RcmdPageState extends State<RcmdPage>
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverPadding(
-              padding: const .only(top: Style.cardSpace, bottom: 100),
+              padding: const .only(top: Style.cardSpace / 2, bottom: 100),
               sliver: Obx(
                 () => _buildBody(colorScheme, controller.loadingState.value),
               ),
@@ -74,11 +74,11 @@ class _RcmdPageState extends State<RcmdPage>
   }
 
   late final gridDelegate = SliverGridDelegateWithExtentAndRatio(
-    mainAxisSpacing: Style.cardSpace,
-    crossAxisSpacing: Style.cardSpace,
+    mainAxisSpacing: Style.cardSpace / 2,
+    crossAxisSpacing: Style.cardSpace / 2,
     maxCrossAxisExtent: Pref.recommendCardWidth,
     childAspectRatio: Style.aspectRatio,
-    mainAxisExtent: MediaQuery.textScalerOf(context).scale(90),
+    mainAxisExtent: MediaQuery.textScalerOf(context).scale(72),
   );
 
   Widget _buildBody(
@@ -157,7 +157,7 @@ class _RcmdPageState extends State<RcmdPage>
     gridDelegate: gridDelegate,
     delegate: const SliverSingleChildDelegate(
       count: 10,
-      child: VideoCardVSkeleton(),
+      child: VideoCardVSkeleton(showStatRow: false),
     ),
   );
 }

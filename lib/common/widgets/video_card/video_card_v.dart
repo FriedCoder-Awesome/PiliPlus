@@ -113,16 +113,12 @@ class VideoCardV extends StatelessWidget {
                             height: maxHeight,
                             borderRadius: const .vertical(top: .circular(12)),
                           ),
-                          if (videoItem.duration > 0)
-                            PBadge(
-                              bottom: 6,
-                              right: 7,
-                              size: .small,
-                              type: .gray,
-                              text: DurationUtils.formatDuration(
-                                videoItem.duration,
-                              ),
-                            ),
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: _coverStats(maxWidth),
+                          ),
                         ],
                       );
                     },
@@ -135,8 +131,8 @@ class VideoCardV extends StatelessWidget {
         ),
         if (videoItem.goto == 'av')
           Positioned(
-            right: -5,
-            bottom: -2,
+            right: 0,
+            bottom: 0,
             width: 29,
             height: 29,
             child: VideoPopupMenu(
@@ -149,8 +145,66 @@ class VideoCardV extends StatelessWidget {
     );
   }
 
+  Widget _coverStats(double width) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.transparent, Colors.black87],
+        ),
+      ),
+      child: Padding(
+        padding: const .only(top: 12, bottom: 4),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: width),
+            child: Padding(
+              padding: const .symmetric(horizontal: 7),
+              child: Row(
+                mainAxisAlignment: .spaceBetween,
+                spacing: 6,
+                children: [
+                  Row(
+                    spacing: 6,
+                    children: [
+                      StatWidget(
+                        type: .play,
+                        value: videoItem.stat.view,
+                        color: Colors.white,
+                      ),
+                      if (videoItem.goto != 'picture')
+                        StatWidget(
+                          type: .danmaku,
+                          value: videoItem.stat.danmu,
+                          color: Colors.white,
+                        ),
+                    ],
+                  ),
+                  if (videoItem.duration > 0)
+                    Text(
+                      DurationUtils.formatDuration(videoItem.duration),
+                      style: const TextStyle(fontSize: 12, color: Colors.white),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget content(BuildContext context) {
     final theme = Theme.of(context);
+    final pubdate = videoItem is RcmdVideoItemModel
+        ? DateFormatUtils.dateFormat(
+            videoItem.pubdate,
+            short: shortFormat,
+            long: longFormat,
+          )
+        : '';
     return Expanded(
       child: Padding(
         padding: const .fromLTRB(6, 5, 6, 5),
@@ -165,7 +219,6 @@ class VideoCardV extends StatelessWidget {
                 style: const TextStyle(height: 1.38),
               ),
             ),
-            videoStat(theme),
             Row(
               spacing: 2,
               children: [
@@ -202,10 +255,13 @@ class VideoCardV extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: Text(
-                    videoItem.owner.name.toString(),
+                    pubdate.isEmpty
+                        ? videoItem.owner.name.toString()
+                        : '${videoItem.owner.name} · $pubdate',
                     maxLines: 1,
                     overflow: .ellipsis,
-                    semanticsLabel: 'UP：${videoItem.owner.name}',
+                    semanticsLabel: 'UP：${videoItem.owner.name} $pubdate'
+                        .trimRight(),
                     style: TextStyle(
                       height: 1.5,
                       fontSize: theme.textTheme.labelMedium!.fontSize,
@@ -213,7 +269,7 @@ class VideoCardV extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (videoItem.goto == 'av') const SizedBox(width: 10),
+                if (videoItem.goto == 'av') const SizedBox(width: 22),
               ],
             ),
           ],
@@ -224,40 +280,4 @@ class VideoCardV extends StatelessWidget {
 
   static final shortFormat = DateFormat('M-d');
   static final longFormat = DateFormat('yy-M-d');
-
-  Widget videoStat(ThemeData theme) {
-    return Row(
-      children: [
-        StatWidget(
-          type: .play,
-          value: videoItem.stat.view,
-        ),
-        if (videoItem.goto != 'picture') ...[
-          const SizedBox(width: 4),
-          StatWidget(
-            type: .danmaku,
-            value: videoItem.stat.danmu,
-          ),
-        ],
-        if (videoItem is RcmdVideoItemModel) ...[
-          const Spacer(),
-          Text.rich(
-            maxLines: 1,
-            TextSpan(
-              style: TextStyle(
-                fontSize: theme.textTheme.labelSmall!.fontSize,
-                color: theme.colorScheme.outline.withValues(alpha: 0.8),
-              ),
-              text: DateFormatUtils.dateFormat(
-                videoItem.pubdate,
-                short: shortFormat,
-                long: longFormat,
-              ),
-            ),
-          ),
-          const SizedBox(width: 2),
-        ],
-      ],
-    );
-  }
 }

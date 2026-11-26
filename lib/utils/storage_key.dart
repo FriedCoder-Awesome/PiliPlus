@@ -92,6 +92,7 @@ abstract final class SettingBoxKey {
       cdnSpeedTest = 'cdnSpeedTest',
       horizontalPreview = 'horizontalPreview',
       banWordForReply = 'banWordForReply',
+      banWordForReplyName = 'banWordForReplyName',
       banWordForZone = 'banWordForZone',
       savedRcmdTip = 'savedRcmdTip',
       openInBrowser = 'openInBrowser',

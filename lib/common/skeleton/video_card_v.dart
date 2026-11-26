@@ -3,9 +3,14 @@ import 'package:PiliPlus/common/style.dart';
 import 'package:material_ui/material_ui.dart';
 
 class VideoCardVSkeleton extends StatelessWidget {
-  const VideoCardVSkeleton({super.key, this.skeleton = true});
+  const VideoCardVSkeleton({
+    super.key,
+    this.skeleton = true,
+    this.showStatRow = true,
+  });
 
   final bool skeleton;
+  final bool showStatRow;
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +42,14 @@ class VideoCardVSkeleton extends StatelessWidget {
                   margin: const .only(top: 5),
                 ),
                 const Spacer(),
-                Row(
-                  spacing: 8,
-                  children: [
-                    Container(
-                      height: 11,
-                      color: color,
-                      width: 40,
-                    ),
-                    Container(
-                      height: 11,
-                      color: color,
-                      width: 40,
-                    ),
-                  ],
-                ),
+                if (showStatRow)
+                  Row(
+                    spacing: 8,
+                    children: [
+                      Container(height: 11, color: color, width: 40),
+                      Container(height: 11, color: color, width: 40),
+                    ],
+                  ),
                 Container(
                   height: 11,
                   width: 75,

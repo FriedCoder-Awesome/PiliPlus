@@ -16,6 +16,10 @@ abstract final class ReplyGrpc {
     Pref.banWordForReply,
     caseSensitive: false,
   );
+  static RegExp replyNameRegExp = RegExp(
+    Pref.banWordForReplyName,
+    caseSensitive: false,
+  );
   static bool enableFilter = replyRegExp.pattern.isNotEmpty;
 
   // static Future replyInfo({required int rpid}) {
@@ -101,7 +105,9 @@ abstract final class ReplyGrpc {
         _blockReplyAtCount(reply) ||
         _blockAtOnlyReply(reply) ||
         (antiGoodsReply && _needRemoveGoodGrpc(reply)) ||
-        (enableFilter && replyRegExp.hasMatch(reply.content.message));
+        (enableFilter && replyRegExp.hasMatch(reply.content.message)) ||
+        (replyNameRegExp.pattern.isNotEmpty &&
+            replyNameRegExp.hasMatch(reply.member.name));
   }
 
   static Future<LoadingState<MainListReply>> mainList({
