@@ -7,10 +7,12 @@ class VideoCardVSkeleton extends StatelessWidget {
     super.key,
     this.skeleton = true,
     this.showStatRow = true,
+    this.coverAspectRatio = Style.aspectRatio,
   });
 
   final bool skeleton;
   final bool showStatRow;
+  final double coverAspectRatio;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class VideoCardVSkeleton extends StatelessWidget {
       crossAxisAlignment: .start,
       children: [
         AspectRatio(
-          aspectRatio: Style.aspectRatio,
+          aspectRatio: coverAspectRatio,
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: color,

@@ -77,7 +77,7 @@ class _RcmdPageState extends State<RcmdPage>
     mainAxisSpacing: Style.cardSpace / 2,
     crossAxisSpacing: Style.cardSpace / 2,
     maxCrossAxisExtent: Pref.recommendCardWidth,
-    childAspectRatio: Style.aspectRatio,
+    childAspectRatio: VideoCardV.coverAspectRatio,
     mainAxisExtent: MediaQuery.textScalerOf(context).scale(72),
   );
 
@@ -157,7 +157,10 @@ class _RcmdPageState extends State<RcmdPage>
     gridDelegate: gridDelegate,
     delegate: const SliverSingleChildDelegate(
       count: 10,
-      child: VideoCardVSkeleton(showStatRow: false),
+      child: VideoCardVSkeleton(
+        showStatRow: false,
+        coverAspectRatio: VideoCardV.coverAspectRatio,
+      ),
     ),
   );
 }
