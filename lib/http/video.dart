@@ -136,8 +136,10 @@ abstract final class VideoHttp {
   // 添加额外的loginState变量模拟未登录状态
   static Future<LoadingState<List<RcmdVideoItemAppModel>>> rcmdVideoListApp({
     required int freshIdx,
+    required int ps,
   }) async {
     final params = {
+      'ps': ps,
       'build': 8430300,
       'c_locale': 'zh_CN',
       'channel': 'master',

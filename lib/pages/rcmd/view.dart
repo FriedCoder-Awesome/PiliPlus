@@ -6,7 +6,9 @@ import 'package:PiliPlus/common/widgets/loading_widget/http_error.dart';
 import 'package:PiliPlus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:PiliPlus/common/widgets/video_card/video_card_v.dart';
 import 'package:PiliPlus/http/loading_state.dart';
+import 'package:PiliPlus/models/model_rec_video_item.dart';
 import 'package:PiliPlus/pages/rcmd/controller.dart';
+import 'package:PiliPlus/utils/extension/theme_ext.dart';
 import 'package:PiliPlus/utils/grid.dart';
 import 'package:PiliPlus/utils/platform_utils.dart';
 import 'package:PiliPlus/utils/storage_pref.dart';
@@ -83,75 +85,63 @@ class _RcmdPageState extends State<RcmdPage>
 
   Widget _buildBody(
     ColorScheme colorScheme,
-    LoadingState<List<dynamic>?> loadingState,
+    LoadingState<List<BaseRcmdVideoItemModel>?> loadingState,
   ) {
     return switch (loadingState) {
       Loading() => _buildSkeleton,
-      Success(:final response) =>
-        response != null && response.isNotEmpty
-            ? SliverGrid.builder(
-                gridDelegate: gridDelegate,
-                itemBuilder: (context, index) {
-                  if (index == response.length - 1) {
-                    controller.onLoadMore();
-                  }
-                  if (controller.lastRefreshAt != null) {
-                    if (controller.lastRefreshAt == index) {
-                      return GestureDetector(
-                        onTap: () => controller
-                          ..animateToTop()
-                          ..onRefresh(),
-                        child: Card(
-                          shape: Style.feedCardShape,
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const .symmetric(horizontal: 10),
-                            child: Text(
-                              '上次看到这里\n点击刷新',
-                              textAlign: .center,
-                              style: TextStyle(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                    final actualIndex = index > controller.lastRefreshAt!
-                        ? index - 1
-                        : index;
-                    return VideoCardV(
-                      videoItem: response[actualIndex],
-                      onRemove: () {
-                        if (controller.lastRefreshAt != null &&
-                            actualIndex < controller.lastRefreshAt!) {
-                          controller.lastRefreshAt =
-                              controller.lastRefreshAt! - 1;
-                        }
-                        controller.loadingState
-                          ..value.data!.removeAt(actualIndex)
-                          ..refresh();
-                      },
-                    );
-                  } else {
-                    return VideoCardV(
-                      videoItem: response[index],
-                      onRemove: () => controller.loadingState
-                        ..value.data!.removeAt(index)
-                        ..refresh(),
-                    );
-                  }
-                },
-                itemCount: controller.lastRefreshAt != null
-                    ? response.length + 1
-                    : response.length,
-              )
-            : HttpError(onReload: controller.onReload),
+      Success(:final response) when response != null && response.isNotEmpty =>
+        _buildFeed(response, colorScheme),
+      Success() => HttpError(onReload: controller.onReload),
       Error(:final errMsg) => HttpError(
         errMsg: errMsg,
         onReload: controller.onReload,
       ),
     };
+  }
+
+  Widget _buildFeed(List<BaseRcmdVideoItemModel> items, ColorScheme colors) {
+    SliverGrid grid(int start, int end) => SliverGrid.builder(
+      gridDelegate: gridDelegate,
+      itemCount: end - start,
+      itemBuilder: (context, index) {
+        final position = start + index;
+        if (position == items.length - 1) controller.onLoadMore();
+        final item = items[position];
+        return VideoCardV(
+          videoItem: item,
+          onRemove: () => controller.removeVideo(item),
+        );
+      },
+    );
+
+    final boundary = controller.lastRefreshAt;
+    if (boundary == null || boundary <= 0 || boundary >= items.length) {
+      return grid(0, items.length);
+    }
+    return SliverMainAxisGroup(
+      slivers: [
+        grid(0, boundary),
+        SliverToBoxAdapter(
+          child: TextButton(
+            onPressed: controller.toTopAndRefresh,
+            style: TextButton.styleFrom(
+              foregroundColor: colors.vipColor,
+              minimumSize: const Size.fromHeight(56),
+            ),
+            child: const Row(
+              mainAxisAlignment: .center,
+              mainAxisSize: .min,
+              children: [
+                Flexible(child: Text('刚刚看到这里，点击刷新')),
+                SizedBox(width: 8),
+                Icon(Icons.sync, size: 16),
+              ],
+            ),
+          ),
+        ),
+        grid(boundary, items.length),
+      ],
+    );
   }
 
   Widget get _buildSkeleton => SliverGrid(
