@@ -67,7 +67,10 @@ class _LiveFollowPageState extends State<LiveFollowPage> {
         gridDelegate: gridDelegate,
         delegate: const SliverSingleChildDelegate(
           count: 10,
-          child: VideoCardVSkeleton(showStatRow: false),
+          child: VideoCardVSkeleton(
+            showStatRow: false,
+            coverCorner: Style.feedCardCorner,
+          ),
         ),
       ),
       Success(:final response) =>

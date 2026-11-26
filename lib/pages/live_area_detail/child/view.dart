@@ -84,7 +84,10 @@ class _LiveAreaChildPageState extends State<LiveAreaChildPage>
             gridDelegate: gridDelegate,
             delegate: const SliverSingleChildDelegate(
               count: 10,
-              child: VideoCardVSkeleton(showStatRow: false),
+              child: VideoCardVSkeleton(
+                showStatRow: false,
+                coverCorner: Style.feedCardCorner,
+              ),
             ),
           ),
         );

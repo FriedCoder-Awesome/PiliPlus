@@ -34,7 +34,7 @@ class _RcmdPageState extends State<RcmdPage>
     final child = Container(
       clipBehavior: .hardEdge,
       margin: const .symmetric(horizontal: Style.safeSpace / 2),
-      decoration: const BoxDecoration(borderRadius: Style.mdRadius),
+      decoration: const BoxDecoration(borderRadius: Style.feedCardBorderRadius),
       child: refreshIndicator(
         key: controller.refreshKey,
         onRefresh: controller.onRefresh,
@@ -102,6 +102,7 @@ class _RcmdPageState extends State<RcmdPage>
                           ..animateToTop()
                           ..onRefresh(),
                         child: Card(
+                          shape: Style.feedCardShape,
                           child: Container(
                             alignment: Alignment.center,
                             padding: const .symmetric(horizontal: 10),
@@ -160,6 +161,7 @@ class _RcmdPageState extends State<RcmdPage>
       child: VideoCardVSkeleton(
         showStatRow: false,
         coverAspectRatio: VideoCardV.coverAspectRatio,
+        coverCorner: Style.feedCardCorner,
       ),
     ),
   );

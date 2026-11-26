@@ -1,5 +1,11 @@
 import 'package:material_ui/material_ui.dart'
-    show BorderRadius, Radius, BoxConstraints, ButtonStyle, VisualDensity;
+    show
+        BorderRadius,
+        Radius,
+        BoxConstraints,
+        ButtonStyle,
+        RoundedRectangleBorder,
+        VisualDensity;
 
 abstract final class Style {
   static const cardSpace = 8.0;
@@ -7,6 +13,11 @@ abstract final class Style {
   static const mdRadius = BorderRadius.all(imgRadius);
   static const imgRadius = Radius.circular(10);
   static const borderRadius6 = BorderRadius.all(.circular(6));
+  static const feedCardCorner = Radius.circular(4);
+  static const feedCardBorderRadius = BorderRadius.all(feedCardCorner);
+  static const feedCardShape = RoundedRectangleBorder(
+    borderRadius: feedCardBorderRadius,
+  );
   static const aspectRatio = 16 / 10;
   static const aspectRatio16x9 = 16 / 9;
   static const aspectRatio3x4 = 3 / 4;

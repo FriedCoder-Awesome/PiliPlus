@@ -58,7 +58,7 @@ class _LivePageState extends State<LivePage>
     return Container(
       clipBehavior: Clip.hardEdge,
       margin: const EdgeInsets.symmetric(horizontal: Style.safeSpace / 2),
-      decoration: const BoxDecoration(borderRadius: Style.mdRadius),
+      decoration: const BoxDecoration(borderRadius: Style.feedCardBorderRadius),
       child: refreshIndicator(
         key: controller.refreshKey,
         onRefresh: controller.onRefresh,
@@ -193,7 +193,10 @@ class _LivePageState extends State<LivePage>
         sliver: SliverGrid(
           gridDelegate: gridDelegate,
           delegate: const SliverSingleChildDelegate(
-            child: VideoCardVSkeleton(showStatRow: false),
+            child: VideoCardVSkeleton(
+              showStatRow: false,
+              coverCorner: Style.feedCardCorner,
+            ),
             count: 10,
           ),
         ),

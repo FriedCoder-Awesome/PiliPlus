@@ -8,11 +8,13 @@ class VideoCardVSkeleton extends StatelessWidget {
     this.skeleton = true,
     this.showStatRow = true,
     this.coverAspectRatio = Style.aspectRatio,
+    this.coverCorner = Style.imgRadius,
   });
 
   final bool skeleton;
   final bool showStatRow;
   final double coverAspectRatio;
+  final Radius coverCorner;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class VideoCardVSkeleton extends StatelessWidget {
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: color,
-              borderRadius: const .vertical(top: Style.imgRadius),
+              borderRadius: .vertical(top: coverCorner),
             ),
           ),
         ),

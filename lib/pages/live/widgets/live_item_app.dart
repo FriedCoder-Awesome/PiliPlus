@@ -34,11 +34,12 @@ class LiveCardVApp extends StatelessWidget {
     return Stack(
       children: [
         Card(
+          shape: Style.feedCardShape,
           child: InkWell(
             onTap: () => PageUtils.toLiveRoom(item.roomid),
             onLongPress: onLongPress,
             onSecondaryTap: PlatformUtils.isMobile ? null : onLongPress,
-            borderRadius: const .all(.circular(12)),
+            customBorder: Style.feedCardShape,
             child: Column(
               crossAxisAlignment: .start,
               children: [
@@ -52,7 +53,7 @@ class LiveCardVApp extends StatelessWidget {
                           src: showFirstFrame ? item.systemCover : item.cover,
                           width: boxConstraints.maxWidth,
                           height: boxConstraints.maxHeight,
-                          borderRadius: const .vertical(top: .circular(12)),
+                          borderRadius: const .vertical(top: Style.feedCardCorner),
                         ),
                         Positioned(
                           left: 0,
